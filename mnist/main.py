@@ -111,7 +111,7 @@ with tf.Session() as sess:
 
             Z_sample = sample_Z(n_sample, Z_dim)
             y_sample = np.zeros(shape=[n_sample, y_dim])
-            y_sample[:, 4] = 1
+            y_sample[:, 5] = 1
 
             samples = sess.run(G_sample, feed_dict={Z: Z_sample, y: y_sample})
 
@@ -132,4 +132,4 @@ with tf.Session() as sess:
             print('D_loss: {:.4f}'.format(D_loss_curr))
             print('G_loss: {:.4f}'.format(G_loss_curr))
 
-    saver.save(sess, '../model/4/mnist.ckpt')
+    saver.save(sess, '../model/5/mnist.ckpt')
