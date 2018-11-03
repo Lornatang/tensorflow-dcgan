@@ -124,7 +124,7 @@ with tf.Session() as sess:
         X_mb, y_mb = mnist.train.next_batch(mb_size)
 
         Z_sample = sample_Z(mb_size, Z_dim)
-        _, D_loss_curr = sess.rn([D_solver, D_loss], feed_dict={X: X_mb, Z: Z_sample, y: y_mb})
+        _, D_loss_curr = sess.run([D_solver, D_loss], feed_dict={X: X_mb, Z: Z_sample, y: y_mb})
         _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict={Z: Z_sample, y: y_mb})
 
         if num % 1000 == 0:
