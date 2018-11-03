@@ -6,12 +6,16 @@ import matplotlib.gridspec as gridspec
 import os
 
 
-mnist = input_data.read_data_sets('/tmp/mnist/', one_hot=True)
+mnist = input_data.read_data_sets('../data/mnist/', one_hot=True)
 mb_size = 64
 Z_dim = 100
 X_dim = mnist.train.images.shape[1]
 y_dim = mnist.train.labels.shape[1]
 h_dim = 128
+
+
+if not os.path.exists('out/'):
+    os.makedirs('out/')
 
 
 def xavier_init(size):
@@ -54,7 +58,7 @@ G_b2 = tf.Variable(tf.zeros(shape=[X_dim]))
 theta_G = [G_W1, G_W2, G_b1, G_b2]
 
 
-def generator(z, y):
+def generator(z, _):
     inputs = tf.concat(axis=1, values=[z, y])
     G_h1 = tf.nn.relu(tf.matmul(inputs, G_W1) + G_b1)
     G_log_prob = tf.matmul(G_h1, G_W2) + G_b2
@@ -99,33 +103,32 @@ G_solver = tf.train.AdamOptimizer().minimize(G_loss, var_list=theta_G)
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-if not os.path.exists('out/'):
-    os.makedirs('out/')
 
-i = 0
+with tf.Session() as sess:
+    i = 0
+    for num in range(1, 100001):
+        if num % 1000 == 0:
+            n_sample = 16
 
-for it in range(1000000):
-    if it % 1000 == 0:
-        n_sample = 16
+            Z_sample = sample_Z(n_sample, Z_dim)
+            y_sample = np.zeros(shape=[n_sample, y_dim])
+            y_sample[:, 1] = 1
 
-        Z_sample = sample_Z(n_sample, Z_dim)
-        y_sample = np.zeros(shape=[n_sample, y_dim])
-        y_sample[:, 7] = 1
+            samples = sess.run(G_sample, feed_dict={Z: Z_sample, y: y_sample})
 
-        samples = sess.run(G_sample, feed_dict={Z: Z_sample, y: y_sample})
+            fig = plot(samples)
+            plt.savefig('out/{}.jpg'.format(str(i).zfill(3)), bbox_inches='tight')
 
-        fig = plot(samples)
-        plt.savefig('out/{}.jpg'.format(str(i).zfill(3)), bbox_inches='tight')
-        i += 1
-        plt.close(fig)
+            i += 1
+            plt.close(fig)
 
-    X_mb, y_mb = mnist.train.next_batch(mb_size)
+        X_mb, y_mb = mnist.train.next_batch(mb_size)
 
-    Z_sample = sample_Z(mb_size, Z_dim)
-    _, D_loss_curr = sess.run([D_solver, D_loss], feed_dict={X: X_mb, Z: Z_sample, y:y_mb})
-    _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict={Z: Z_sample, y:y_mb})
+        Z_sample = sample_Z(mb_size, Z_dim)
+        _, D_loss_curr = sess.run([D_solver, D_loss], feed_dict={X: X_mb, Z: Z_sample, y: y_mb})
+        _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict={Z: Z_sample, y: y_mb})
 
-    if it % 1000 == 0:
-        print('Iter: {}'.format(it))
-        print('D loss: {:.4}'. format(D_loss_curr))
-        print('G_loss: {:.4}'.format(G_loss_curr))
+        if num % 1000 == 0:
+            print('Iter: {}'.format(num))
+            print('D_loss: {:.4f}'.format(D_loss_curr))
+            print('G_loss: {:.4f}'.format(G_loss_curr))
