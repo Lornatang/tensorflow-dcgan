@@ -100,11 +100,10 @@ D_solver = tf.train.AdamOptimizer().minimize(D_loss, var_list=theta_D)
 G_solver = tf.train.AdamOptimizer().minimize(G_loss, var_list=theta_G)
 
 
-sess = tf.Session()
-sess.run(tf.global_variables_initializer())
-
+saver = tf.train.Saver()
 
 with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
     i = 0
     for num in range(1, 100001):
         if num % 1000 == 0:
@@ -112,7 +111,7 @@ with tf.Session() as sess:
 
             Z_sample = sample_Z(n_sample, Z_dim)
             y_sample = np.zeros(shape=[n_sample, y_dim])
-            y_sample[:, 1] = 1
+            y_sample[:, 2] = 1
 
             samples = sess.run(G_sample, feed_dict={Z: Z_sample, y: y_sample})
 
@@ -132,3 +131,5 @@ with tf.Session() as sess:
             print('Iter: {}'.format(num))
             print('D_loss: {:.4f}'.format(D_loss_curr))
             print('G_loss: {:.4f}'.format(G_loss_curr))
+
+    saver.save(sess, '../model/2.ckpt')
