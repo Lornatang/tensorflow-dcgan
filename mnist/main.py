@@ -104,14 +104,14 @@ saver = tf.train.Saver()
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    i = 0
+    i = 1
     for num in range(1, 100001):
         if num % 1000 == 0:
             n_sample = 16
 
             Z_sample = sample_Z(n_sample, Z_dim)
             y_sample = np.zeros(shape=[n_sample, y_dim])
-            y_sample[:, 2] = 1
+            y_sample[:, 4] = 1
 
             samples = sess.run(G_sample, feed_dict={Z: Z_sample, y: y_sample})
 
@@ -124,7 +124,7 @@ with tf.Session() as sess:
         X_mb, y_mb = mnist.train.next_batch(mb_size)
 
         Z_sample = sample_Z(mb_size, Z_dim)
-        _, D_loss_curr = sess.run([D_solver, D_loss], feed_dict={X: X_mb, Z: Z_sample, y: y_mb})
+        _, D_loss_curr = sess.rn([D_solver, D_loss], feed_dict={X: X_mb, Z: Z_sample, y: y_mb})
         _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict={Z: Z_sample, y: y_mb})
 
         if num % 1000 == 0:
@@ -132,4 +132,4 @@ with tf.Session() as sess:
             print('D_loss: {:.4f}'.format(D_loss_curr))
             print('G_loss: {:.4f}'.format(G_loss_curr))
 
-    saver.save(sess, '../model/2.ckpt')
+    saver.save(sess, '../model/4/mnist.ckpt')
