@@ -119,7 +119,7 @@ with tf.Session() as sess:
             samples = sess.run(G_sample, feed_dict={Z: Z_sample, y: y_sample})
 
             fig = plot(samples)
-            plt.savefig(out_dir + '{}.jpg'.format(str(i).zfill(3)), bbox_inches='tight')
+            plt.savefig(out_dir + '1.{}.jpg'.format(str(i).zfill(3)), bbox_inches='tight')
 
             i += 1
             plt.close(fig)
