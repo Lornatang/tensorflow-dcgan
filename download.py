@@ -1,5 +1,5 @@
 """
-https://github.com/carpedm20/DCGAN-tensorflow/blob/master/download.py
+ modify https://github.com/carpedm20/DCGAN-tensorflow/blob/master/download.py
 
 Downloads the following:
 - Celeb-A dataset
