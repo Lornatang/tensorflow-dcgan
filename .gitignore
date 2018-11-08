@@ -110,3 +110,4 @@ data/mnist/t10k-images-idx3-ubyte.gz
 data/mnist/t10k-labels-idx1-ubyte.gz
 data/mnist/train-images-idx3-ubyte.gz
 data/mnist/train-labels-idx1-ubyte.gz
+.samples/
