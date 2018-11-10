@@ -1,5 +1,5 @@
 from PIL import Image
-
+import glob
 
 def fill_image(image):
     width, height = image.size
@@ -43,20 +43,22 @@ def cut_image(image):
     return image_list
 
 
-def save_images(image_list):
+def save_images(filename, image_list):
     index = 1
     for image in image_list:
-        image.save('result/' + str(index) + '.png')
+        image.save('result/' + filename + '.' + str(index) + '.png')
         index += 1
-
+        
 
 if __name__ == '__main__':
-    file_path = "samples/test_arange_0.png"
-    # 打开图像
-    image = Image.open(file_path)
-    # 将图像转为正方形，不够的地方补充为白色底色
-    image = fill_image(image)
-    # 分为图像
-    image_list = cut_image(image)
-    # 保存图像
-    save_images(image_list)
+    for img in glob.glob('samples/*'):
+        file_path = img
+        # 打开图像
+        image = Image.open(file_path)
+        # 将图像转为正方形，不够的地方补充为白色底色
+        # image = fill_image(image)
+        # 分为图像
+        image_list = cut_image(image)
+        # 保存图像
+        img = img.split('/')[1].split('.')[0]
+        save_images(img, image_list)
