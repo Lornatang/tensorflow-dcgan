@@ -114,3 +114,4 @@ data/mnist/train-labels-idx1-ubyte.gz
 checkpoint/.DS_Store
 .DS_Store
 *.local
+*.png
